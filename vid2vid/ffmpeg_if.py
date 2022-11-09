@@ -181,6 +181,19 @@ def create_video_from_video( path = './testsrc.mp4', start = 0, end=10, out_file
     )
     return out
 
+def create_video_from_frames( path, out_filename = './output.mp4' ):
+    '''
+    https://stackoverflow.com/questions/24961127/how-to-create-a-video-from-images-with-ffmpeg
+    
+    ffmpeg -framerate 30 -pattern_type glob -i '*.png' \
+    -c:v libx264 -pix_fmt yuv420p out.mp4
+
+    Audio (TODO)
+    ffmpeg -framerate 30 -pattern_type glob -i '*.png' \
+    -i audio.ogg -c:a copy -shortest -c:v libx264 -pix_fmt yuv420p out.mp4
+
+    '''
+
 # Main
 def main():
     testsrc = './testsrc.mp4'
