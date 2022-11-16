@@ -145,14 +145,26 @@ def create_test_src(path='./testsrc.mp4', duration = 30):
     out, err = process.communicate()
 
 
-def extract_key_frames( path = './testsrc.mp4', out_filename='thumbnails-%02d.jpeg' ):
+def extract_key_frames( src = './testsrc.mp4', out_filename='thumbnails-%02d.jpeg' ):
     '''
-    
     ffmpeg -skip_frame nokey -i 2.flv -vsync 0 -r 30 -f image2 thumbnails-%02d.jpeg
     '''
-    out, err = (
+
+    out, error = (
         ffmpeg
-        .input( src, skip_frame='nokey', vsync=0, r=30, format='image2' )
+        .input( src, skip_frame='nokey', vsync=0, r=30 )
+        .output( out_filename, format='image2' )
+        .run( capture_stdout = True )
+    )
+    return out
+
+def extract_all_frames( src = './testsrc.mp4', out_filename='thumbnails-%02d.jpeg' ):
+    '''
+    ffmpeg -i file.mpg -r 1/1 $filename%03d.jpg
+    '''
+    out, error = (
+        ffmpeg
+        .input( src )
         .output( out_filename )
         .run( capture_stdout = True )
     )
@@ -181,7 +193,7 @@ def create_video_from_video( path = './testsrc.mp4', start = 0, end=10, out_file
     )
     return out
 
-def create_video_from_frames( path, out_filename = './output.mp4' ):
+def create_video_from_frames( path, out_filename = './output.mp4', framerate = 25 ):
     '''
     https://stackoverflow.com/questions/24961127/how-to-create-a-video-from-images-with-ffmpeg
     
@@ -192,7 +204,30 @@ def create_video_from_frames( path, out_filename = './output.mp4' ):
     ffmpeg -framerate 30 -pattern_type glob -i '*.png' \
     -i audio.ogg -c:a copy -shortest -c:v libx264 -pix_fmt yuv420p out.mp4
 
+
+    Probably best to use: https://github.com/kkroening/ffmpeg-python/tree/master/examples
     '''
+    out, error = (
+        ffmpeg
+        .input( path, pattern_type='glob', framerate=framerate )
+        .output( out_filename )
+        .run()
+        )
+    return out
+
+def create_video_from_frames_filter( path, out_filename = './output.mp4', framerate = 25 ):
+    '''
+    
+    '''
+    out, error = (
+        ffmpeg
+        .input( path, pattern_type='glob' )
+        .filter( 'minterpolate', fps=framerate, mi_mode='blend' )
+        .output( out_filename )
+        .run()
+        )
+    return out
+
 
 # Main
 def main():
