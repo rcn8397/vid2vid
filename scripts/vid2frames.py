@@ -26,11 +26,18 @@ def main( args ):
         fname = 'thumbnails-%02d.jpeg'
 
     output = os.path.join( dname, fname )
+
+    if args.probe:
+        deep_probe( args.source )
         
-    # Extract Key Frames
     
-    extract_key_frames( src = args.source,
-                        out_filename = output )
+    # Extract Frames
+    if args.key:
+        extract_key_frames( src = args.source,
+                            out_filename = output )
+    else:
+        extract_all_frames( src = args.source,
+                            out_filename = output )
 
     # Profit
     print( 'Enjoy the frames' )
@@ -43,6 +50,10 @@ if __name__ == '__main__':
     # Common parameters
     parser.add_argument( 'source', help='Input Source' )
     parser.add_argument( '-o', '--output', help='Output' )
+    parser.add_argument( '-k', '--key', help='Only extract key frames',
+                         action='store_true')
+    parser.add_argument( '-p', '--probe', help='Probe file',
+                         action='store_true' )
     parser.add_argument( '-v', '--verbose',
                          help   = 'Increase verbosity',
                          action ='store_true' )

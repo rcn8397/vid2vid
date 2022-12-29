@@ -164,7 +164,7 @@ def extract_all_frames( src = './testsrc.mp4', out_filename='thumbnails-%02d.jpe
     '''
     out, error = (
         ffmpeg
-        .input( src )
+        .input( src, r='1/1' )
         .output( out_filename )
         .run( capture_stdout = True )
     )
