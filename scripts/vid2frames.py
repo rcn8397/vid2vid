@@ -29,6 +29,7 @@ def main( args ):
 
     if args.probe:
         deep_probe( args.source )
+        sys.exit(0)
         
     
     # Extract Frames
